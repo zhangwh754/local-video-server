@@ -7,6 +7,26 @@ const ip = require("ip");
 const app = express();
 const PORT = 3000;
 
+// 获取视频文件列表接口
+app.get("/", (req, res) => {
+  // 读取模板文件并插入视频列表
+  fs.readFile(path.join(__dirname, "./index.html"), "utf8", (err, htmlData) => {
+    if (err) {
+      console.error("Error reading template file:", err);
+      return res.status(500).send("Error loading page.");
+    }
+
+    // 将 {{VIDEO_LIST}} 替换为动态生成的内容
+    const videoListPage = htmlData.replace(
+      "<!-- {{VIDEO_LIST}} -->",
+      '<h2 style="color: red;">VIDEO_LIST</h2>'
+    );
+
+    // 发送修改后的 HTML 内容
+    res.send(videoListPage);
+  });
+});
+
 // 设置路由来提供视频流
 app.get("/video/:filename", (req, res) => {
   const filename = req.params.filename;
@@ -50,5 +70,5 @@ app.get("/video/:filename", (req, res) => {
 // 启动服务器
 app.listen(PORT, () => {
   const localIp = ip.address(); // 获取本地局域网IP地址
-  console.log(`Server running at http://${localIp}:${PORT}/video`);
+  console.log(`Server running at http://${localIp}:${PORT}`);
 });

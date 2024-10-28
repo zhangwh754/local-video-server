@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Gallery</title>
+    <style>
+      /* 页面整体样式 */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 2px;
+        background-color: #f4f4f9;
+      }
+
+      /* 视频容器样式 */
+      .video-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .video-item {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 8px 4px;
+      }
+
+      /* 单个视频卡片样式 */
+      .video-card {
+        background-color: #fff;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        text-align: center;
+        transition: transform 0.3s;
+      }
+
+      /* 视频封面样式 */
+      .video-thumbnail {
+        width: 100%;
+        aspect-ratio: 5 / 3;
+        object-fit: cover;
+        background-color: #000;
+      }
+
+      /* 视频标题和时长 */
+      .video-info {
+        padding: 6px;
+      }
+
+      .video-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin: 0 0 6px;
+      }
+
+      .video-duration {
+        font-size: 14px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="video-container">
+      <!-- {{VIDEO_LIST}} -->
+
+      <!-- 视频卡片 -->
+      <!-- <div class="video-item">
+        <div class="video-card">
+          <img src="thumbnail1.jpg" alt="Thumbnail" class="video-thumbnail" />
+          <div class="video-info">
+            <div class="video-title">Video Title 1</div>
+            <div class="video-duration">Duration: 3:45</div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </body>
+</html>
