@@ -3,12 +3,15 @@ const path = require("path");
 
 const express = require("express");
 const ip = require("ip");
+const { getVideoFiles } = require("./utils/getVideoInfo");
 
 const app = express();
 const PORT = 3000;
 
 // 获取视频文件列表接口
 app.get("/", (req, res) => {
+  const videoFiles = getVideoFiles(path.join(__dirname, "./media"));
+
   // 读取模板文件并插入视频列表
   fs.readFile(path.join(__dirname, "./index.html"), "utf8", (err, htmlData) => {
     if (err) {
@@ -16,10 +19,29 @@ app.get("/", (req, res) => {
       return res.status(500).send("Error loading page.");
     }
 
+    // 生成视频列表的 HTML 项目
+    const videoItems = videoFiles
+      .map((video) => {
+        const filename = video.split("\\").pop();
+
+        return `
+          <div class="video-item">
+            <div class="video-card">
+              <img src="" class="video-thumbnail" />
+              <div class="video-info">
+                <div class="video-title">${filename}</div>
+                <div class="video-duration">Duration: 3:45</div>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+
     // 将 {{VIDEO_LIST}} 替换为动态生成的内容
     const videoListPage = htmlData.replace(
       "<!-- {{VIDEO_LIST}} -->",
-      '<h2 style="color: red;">VIDEO_LIST</h2>'
+      videoItems
     );
 
     // 发送修改后的 HTML 内容
