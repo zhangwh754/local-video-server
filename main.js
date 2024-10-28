@@ -3,7 +3,7 @@ const path = require("path");
 
 const express = require("express");
 const ip = require("ip");
-const { getVideoFiles } = require("./utils/getVideoInfo");
+const { getVideoFiles, getVideoMetadata } = require("./utils/getVideoInfo");
 
 const app = express();
 const PORT = 3000;
@@ -13,40 +13,49 @@ app.get("/", (req, res) => {
   const videoFiles = getVideoFiles(path.join(__dirname, "./media"));
 
   // 读取模板文件并插入视频列表
-  fs.readFile(path.join(__dirname, "./index.html"), "utf8", (err, htmlData) => {
-    if (err) {
-      console.error("Error reading template file:", err);
-      return res.status(500).send("Error loading page.");
-    }
+  fs.readFile(
+    path.join(__dirname, "./index.html"),
+    "utf8",
+    async (err, htmlData) => {
+      if (err) {
+        console.error("Error reading template file:", err);
+        return res.status(500).send("Error loading page.");
+      }
 
-    // 生成视频列表的 HTML 项目
-    const videoItems = videoFiles
-      .map((video) => {
+      let videoItems = "";
+
+      // 生成视频列表的 HTML 项目
+      for (let i = 0; i < videoFiles.length; i++) {
+        const video = videoFiles[i];
+
         const filename = video.split("\\").pop();
+        const metadata = await getVideoMetadata(video);
 
-        return `
-          <div class="video-item">
-            <div class="video-card">
-              <img src="" class="video-thumbnail" />
-              <div class="video-info">
-                <div class="video-title">${filename}</div>
-                <div class="video-duration">Duration: 3:45</div>
-              </div>
+        const str = `
+        <div class="video-item">
+          <div class="video-card">
+            <img src="/image/${metadata.thumbnail}" class="video-thumbnail" />
+            <div class="video-info">
+              <div class="video-title">${filename}</div>
+              <div class="video-duration">Duration: ${metadata.duration}</div>
             </div>
           </div>
-        `;
-      })
-      .join("");
+        </div>
+      `;
 
-    // 将 {{VIDEO_LIST}} 替换为动态生成的内容
-    const videoListPage = htmlData.replace(
-      "<!-- {{VIDEO_LIST}} -->",
-      videoItems
-    );
+        videoItems = videoItems.concat(str);
+      }
 
-    // 发送修改后的 HTML 内容
-    res.send(videoListPage);
-  });
+      // 将 {{VIDEO_LIST}} 替换为动态生成的内容
+      const videoListPage = htmlData.replace(
+        "<!-- {{VIDEO_LIST}} -->",
+        videoItems
+      );
+
+      // 发送修改后的 HTML 内容
+      res.send(videoListPage);
+    }
+  );
 });
 
 // 设置路由来提供视频流
@@ -87,6 +96,14 @@ app.get("/video/:filename", (req, res) => {
     res.writeHead(200, head);
     fs.createReadStream(videoPath).pipe(res);
   }
+});
+
+// 设置路由来提供视频流
+app.get("/image/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, `./media/${filename}`);
+
+  fs.createReadStream(imagePath).pipe(res);
 });
 
 // 启动服务器
