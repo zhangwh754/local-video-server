@@ -36,10 +36,6 @@ function getVideoImage(filePath) {
     const videoName = path.basename(filePath, path.extname(filePath));
     const thumbnailPath = path.join(videoDir, `${videoName}.jpg`);
 
-    console.log(
-      `ffmpeg -i "${filePath}" -ss 00:00:01.000 -vframes 1 "${thumbnailPath}"`
-    );
-
     // 检查是否已存在同名的缩略图文件
     if (fs.existsSync(thumbnailPath)) {
       // 如果缩略图存在，直接返回封面路径和视频时长
