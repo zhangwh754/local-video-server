@@ -32,16 +32,18 @@ app.get("/", (req, res) => {
         const metadata = await getVideoMetadata(video);
 
         const str = `
-        <div class="video-item">
-          <div class="video-card">
-            <img src="/image/${metadata.thumbnail}" class="video-thumbnail" />
-            <div class="video-info">
-              <div class="video-title">${filename}</div>
-              <div class="video-duration">Duration: ${metadata.duration}</div>
-            </div>
+          <div class="video-item">
+            <a target="_blank" href="/video/${filename}"">
+              <div class="video-card">
+                <img src="/image/${metadata.thumbnail}" class="video-thumbnail" />
+                <div class="video-info">
+                  <div class="video-title">${filename}</div>
+                  <div class="video-duration">Duration: ${metadata.duration}</div>
+                </div>
+              </div>
+            </a>
           </div>
-        </div>
-      `;
+        `;
 
         videoItems = videoItems.concat(str);
       }
@@ -81,7 +83,7 @@ app.get("/video/:filename", (req, res) => {
       "Accept-Ranges": "bytes",
       "Content-Length": chunkSize,
       "Content-Type": "video/mp4",
-      "Content-Disposition": `attachment; filename="${downloadFilename}"`,
+      // "Content-Disposition": `attachment; filename="${downloadFilename}"`,
     };
 
     res.writeHead(206, head);
@@ -90,7 +92,7 @@ app.get("/video/:filename", (req, res) => {
     const head = {
       "Content-Length": fileSize,
       "Content-Type": "video/mp4",
-      "Content-Disposition": `attachment; filename="${downloadFilename}"`,
+      // "Content-Disposition": `attachment; filename="${downloadFilename}"`,
     };
 
     res.writeHead(200, head);

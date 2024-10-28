@@ -13,6 +13,29 @@
         background-color: #f4f4f9;
       }
 
+      a {
+        color: inherit; /* 文本颜色继承自父元素 */
+        text-decoration: none; /* 去除下划线 */
+      }
+
+      /* 针对不同的状态可以分别设置样式 */
+      a:link {
+        color: inherit; /* 未访问的链接颜色 */
+      }
+
+      a:visited {
+        color: inherit; /* 已访问的链接颜色 */
+      }
+
+      a:hover {
+        color: inherit; /* 鼠标悬停时的颜色 */
+        text-decoration: none; /* 去除鼠标悬停时的下划线 */
+      }
+
+      a:active {
+        color: inherit; /* 鼠标点击时的颜色 */
+      }
+
       /* 视频容器样式 */
       .video-container {
         display: flex;
